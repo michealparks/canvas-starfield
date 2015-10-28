@@ -1,0 +1,27 @@
+{
+  "name": "canvas-starfield",
+  "version": "1.0.0",
+  "description": "A canvas rendered starfield that twinkles and moves.",
+  "main": "canvas-starfield.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/michealparks/canvas-starfield.git"
+  },
+  "keywords": [
+    "starfield",
+    "canvas",
+    "stars",
+    "star",
+    "animation",
+    "game"
+  ],
+  "author": "Micheal Parks",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/michealparks/canvas-starfield/issues"
+  },
+  "homepage": "https://github.com/michealparks/canvas-starfield#readme"
+}
