@@ -26,8 +26,8 @@ SOFTWARE.
 
 (function(window, sf) {
 
-  if (typeof module !== 'undefined') module.exports = sf
-  else window.Starfield = sf 
+  if (typeof module !== 'undefined') module.exports = sf()
+  else window.Starfield = sf()
 
 })(this, function() {
 
@@ -57,7 +57,7 @@ function Starfield(config) {
   this.vy = config.vy || 0.05
 
   for (var i = 0, l = config.numStars || 500; i < l; i++) this.stars.push({
-    x: Math.round(Math.random() * this.canvas.width), 
+    x: Math.round(Math.random() * this.canvas.width),
     y: Math.round(Math.random() * this.canvas.height),
     r: 0.5 + (Math.random() * (config.maxRadius || 500)),
     l: Math.random(),
