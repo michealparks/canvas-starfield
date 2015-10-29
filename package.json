@@ -1,6 +1,6 @@
 {
   "name": "canvas-starfield",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A canvas rendered starfield that twinkles and moves.",
   "main": "canvas-starfield.js",
   "scripts": {

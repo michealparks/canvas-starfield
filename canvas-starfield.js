@@ -65,7 +65,7 @@ function Starfield(config) {
     dl: Math.round(Math.random()) === 1? 0.01: -0.01
   })
 
-  window.addEventListener('resize', this.onResize.bind(this))
+  // window.addEventListener('resize', this.onResize.bind(this))
 }
 
 Starfield.prototype.onResize = function() {
