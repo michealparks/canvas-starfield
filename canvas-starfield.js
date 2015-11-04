@@ -49,28 +49,39 @@ function Starfield(config) {
     config.canvas
   this.ctx = this.canvas.getContext('2d')
   this.style = getComputedStyle(this.canvas)
-  
-  this.onResize()
 
-  this.stars = []
   this.vx = config.vx || 0.05
   this.vy = config.vy || 0.05
 
-  for (var i = 0, l = config.numStars || 500; i < l; i++) this.stars.push({
+  this.maxStars = config.numStars || 500
+  this.maxRadius = config.maxRadius
+
+  this.onResize()
+
+  window.addEventListener('resize', this.onResize.bind(this))
+}
+
+Starfield.prototype.loadStars = function() {
+  this.stars = []
+
+  for (var i = 0, l = this.numStars; i < l; i++) this.stars.push({
     x: Math.round(Math.random() * this.canvas.width),
     y: Math.round(Math.random() * this.canvas.height),
-    r: 0.5 + (Math.random() * (config.maxRadius || 500)),
+    r: 0.5 + (Math.random() * (this.maxRadius || 500)),
     l: Math.random(),
     bl: 0.1 * (Math.random()*6 + 2),
     dl: Math.round(Math.random()) === 1? 0.01: -0.01
   })
-
-  // window.addEventListener('resize', this.onResize.bind(this))
 }
 
 Starfield.prototype.onResize = function() {
   this.canvas.width = Number(this.style.width.replace('px', '')) * window.devicePixelRatio
   this.canvas.height = Number(this.style.height.replace('px', '')) * window.devicePixelRatio
+
+  if (this.canvas.width / window.devicePixelRatio < 500) this.numStars = 100
+  else this.numStars = this.maxStars
+
+  this.loadStars();
 }
 
 Starfield.prototype.start = function() {
