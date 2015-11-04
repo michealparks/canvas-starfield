@@ -18,7 +18,8 @@ var sf = new Starfield({
   numStars: 800,               // default 500
   dx: 0.05,                    // x speed of stars in px/frame, default 0.05
   dy: 0.025,                   // y speed of stars in px/frame, default 0.05
-  maxRadius: 2                 // maximum star radius in px
+  maxRadius: 2,                // maximum star radius in px
+  shootingsStarInterval: 5     // time in seconds between shooting stars (omit field to disable shooting stars)
 })
 
 sf.start()

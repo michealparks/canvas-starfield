@@ -133,7 +133,7 @@ Starfield.prototype.start = function() {
 
       if (star.r <= 0) this.shootingStar = undefined
     } else if (this.shootingStarInterval) {
-      var i = this.shootingStarInterval
+      var i = this.shootingStarInterval * 1000
       var t = Date.now()
 
       if (t - this.lastShootingStar >= i) {
