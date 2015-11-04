@@ -56,22 +56,31 @@ function Starfield(config) {
   this.maxStars = config.numStars || 500
   this.maxRadius = config.maxRadius
 
+  this.shootingStarInterval = config.shootingStarInterval || undefined
+  this.lastShootingStar = this.shootingStarInterval ? Date.now() : undefined
+  this.shootingStar = undefined;
+
   this.onResize()
 
   window.addEventListener('resize', this.onResize.bind(this))
 }
 
-Starfield.prototype.loadStars = function() {
-  this.stars = []
-
-  for (var i = 0, l = this.numStars; i < l; i++) this.stars.push({
+Starfield.prototype.star = function() {
+  return {
     x: Math.round(Math.random() * this.canvas.width),
     y: Math.round(Math.random() * this.canvas.height),
     r: 0.5 + (Math.random() * (this.maxRadius || 500)),
     l: Math.random(),
     bl: 0.1 * (Math.random()*6 + 2),
     dl: Math.round(Math.random()) === 1? 0.01: -0.01
-  })
+  }
+}
+
+Starfield.prototype.loadStars = function() {
+  this.stars = []
+
+  for (var i = 0, l = this.numStars; i < l; i++)
+    this.stars.push(this.star())
 }
 
 Starfield.prototype.onResize = function() {
@@ -84,6 +93,13 @@ Starfield.prototype.onResize = function() {
   this.loadStars();
 }
 
+Starfield.prototype.draw = function(star) {
+  this.ctx.beginPath()
+  this.ctx.fillStyle = 'rgba(255,255,255,' + star.l + ')' 
+  this.ctx.arc(star.x, star.y, star.r, 0, 2 * Math.PI, false)
+  this.ctx.fill()
+}
+
 Starfield.prototype.start = function() {
   var tick = function() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
@@ -93,10 +109,8 @@ Starfield.prototype.start = function() {
     var i = this.stars.length
     while (i-- > 0) {
       var star = this.stars[i]
-      this.ctx.beginPath()
-      this.ctx.fillStyle = 'rgba(255,255,255,' + star.l + ')' 
-      this.ctx.arc(star.x, star.y, star.r, 0, 2 * Math.PI, false)
-      this.ctx.fill()
+
+      this.draw(star)
       
       star.y += this.vy 
       star.x += this.vx
@@ -105,6 +119,29 @@ Starfield.prototype.start = function() {
       if (Math.abs(star.l - star.bl) >= 0.25) star.dl = -star.dl
       if (star.x > this.canvas.width) star.x = this.vx > 0? -1: this.canvas.width + 1
       if (star.y > this.canvas.height) star.y = this.vy > 0? -1: this.canvas.height + 1
+    }
+
+    if (this.shootingStar) {
+      var star = this.shootingStar;
+
+      this.draw(star)
+      
+      star.y += 15
+      star.x += 15
+      star.l += star.dl
+      star.r -= .1
+
+      if (star.r <= 0) this.shootingStar = undefined
+    } else if (this.shootingStarInterval) {
+      var i = this.shootingStarInterval
+      var t = Date.now()
+
+      if (t - this.lastShootingStar >= i) {
+        this.shootingStar = this.star()
+        this.lastShootingStar = Date.now()
+
+        this.shootingStar.r = 3
+      }
     }
 
     this.frameId = window.requestAnimationFrame(tick)
