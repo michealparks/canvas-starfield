@@ -34,6 +34,8 @@ SOFTWARE.
 'use strict'
 
 /*
+ * Starfield Constructor
+ *
  * config:
  * {
  *   canvas: string or HTML element
@@ -41,9 +43,12 @@ SOFTWARE.
  *   vx: number, rate of x movement, default 0.05
  *   vy: number, rate of y movement, default 0.05
  *   maxRadius: number, default 2
+ *   shootingStarInterval: 2000
  * }
  */
 function Starfield(config) {
+  config = config || {}
+
   this.canvas = typeof config.canvas === 'string' ?
     document.querySelector(config.canvas) :
     config.canvas
@@ -54,11 +59,11 @@ function Starfield(config) {
   this.vy = config.vy || 0.05
 
   this.maxStars = config.numStars || 500
-  this.maxRadius = config.maxRadius
+  this.maxRadius = config.maxRadius || 1.5
 
-  this.shootingStarInterval = config.shootingStarInterval || undefined
-  this.lastShootingStar = this.shootingStarInterval ? Date.now() : undefined
-  this.shootingStar = undefined;
+  this.shootingStarInterval = config.shootingStarInterval
+  this.lastShootingStar = this.shootingStarInterval ? performance.now() : undefined
+  this.shootingStar
 
   this.onResize()
 
@@ -69,28 +74,30 @@ Starfield.prototype.star = function() {
   return {
     x: Math.round(Math.random() * this.canvas.width),
     y: Math.round(Math.random() * this.canvas.height),
-    r: 0.5 + (Math.random() * (this.maxRadius || 500)),
+    r: 0.5 + (Math.random() * this.maxRadius),
     l: Math.random(),
-    bl: 0.1 * (Math.random()*6 + 2),
+    bl: 0.1 * (Math.random() * 6 + 2),
     dl: Math.round(Math.random()) === 1? 0.01: -0.01
   }
 }
 
 Starfield.prototype.loadStars = function() {
-  this.stars = []
+  this.stars = new Array(this.numStars)
 
-  for (var i = 0, l = this.numStars; i < l; i++)
-    this.stars.push(this.star())
+  var i = this.numStars
+  while (i-- > 0) this.stars[i] = this.star()
 }
 
 Starfield.prototype.onResize = function() {
-  this.canvas.width = Number(this.style.width.replace('px', '')) * window.devicePixelRatio
-  this.canvas.height = Number(this.style.height.replace('px', '')) * window.devicePixelRatio
+  var ratio = window.devicePixelRatio || 1
 
-  if (this.canvas.width / window.devicePixelRatio < 500) this.numStars = 100
+  this.canvas.width = this.style.width.replace('px', '') | 0 * ratio
+  this.canvas.height = this.style.height.replace('px', '') | 0 * ratio
+
+  if (this.canvas.width / ratio < 500) this.numStars = 100
   else this.numStars = this.maxStars
 
-  this.loadStars();
+  this.loadStars()
 }
 
 Starfield.prototype.draw = function(star) {
@@ -101,8 +108,8 @@ Starfield.prototype.draw = function(star) {
 }
 
 Starfield.prototype.start = function() {
-  var tick = function() {
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+  var tick = function(timeStamp) {
+
     this.ctx.fillStyle = 'black' 
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height)
 
@@ -112,7 +119,7 @@ Starfield.prototype.start = function() {
 
       this.draw(star)
       
-      star.y += this.vy 
+      star.y += this.vy
       star.x += this.vx
       star.l += star.dl
 
@@ -122,24 +129,22 @@ Starfield.prototype.start = function() {
     }
 
     if (this.shootingStar) {
-      var star = this.shootingStar;
+      var star = this.shootingStar
 
       this.draw(star)
       
-      star.y += 15
-      star.x += 15
+      star.y += 3
+      star.x += 7
       star.l += star.dl
-      star.r -= .1
+      star.r -= 0.06
 
       if (star.r <= 0) this.shootingStar = undefined
+
     } else if (this.shootingStarInterval) {
-      var i = this.shootingStarInterval * 1000
-      var t = Date.now()
 
-      if (t - this.lastShootingStar >= i) {
+      if (timeStamp - this.lastShootingStar >= this.shootingStarInterval) {
         this.shootingStar = this.star()
-        this.lastShootingStar = Date.now()
-
+        this.lastShootingStar = timeStamp
         this.shootingStar.r = 3
       }
     }

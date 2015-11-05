@@ -1,0 +1,16 @@
+<html lang='en-us'>
+
+<style> body { margin: 0; } canvas { height: 100%; width: 100%; } </style>
+
+<canvas></canvas>
+
+<script src="canvas-starfield.js"></script>
+<script>
+new Starfield({ 
+  canvas: 'canvas',
+  numStars: 1000,
+  shootingStarInterval: 4000
+}).start()
+</script>
+
+</html>
