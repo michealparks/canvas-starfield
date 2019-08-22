@@ -15,11 +15,11 @@ npm install canvas-starfield
 var Starfield = require('canvas-starfield')
 var sf = new Starfield({
   canvas: '#starfield-canvas', // string selector or HTML element
-  numStars: 800,               // default 500
-  dx: 0.05,                    // x speed of stars in px/frame, default 0.05
-  dy: 0.025,                   // y speed of stars in px/frame, default 0.05
+  maxStars: 800,               // default 500
+  vx: 0.05,                    // x speed of stars in px/frame, default 0.05
+  vy: 0.025,                   // y speed of stars in px/frame, default 0.05
   maxRadius: 2,                // maximum star radius in px
-  shootingStarInterval: 5     // time in seconds between shooting stars (omit field to disable shooting stars)
+  shootingStarInterval: 5      // time in seconds between shooting stars (omit field to disable shooting stars)
 })
 
 sf.start()
